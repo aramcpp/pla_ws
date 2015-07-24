@@ -1,1 +1,1 @@
-create table users(userid varchar(36) NOT NULL, username text NOT NULL, password text NOT NULL, email text NOT NULL, PRIMARY KEY (userid)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table users(userid varchar(36) NOT NULL, username text NOT NULL, password text NOT NULL, parentEMail text NOT NULL, birthday text NOT NULL, avatar text NOT NULL, myLanguage text NOT NULL, secondLanguage text NOT NULL, PRIMARY KEY (userid)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
