@@ -3,6 +3,9 @@
 // loading dependencies
 var express = require('express');
 var service = express.Router();
+var mysql   = require("../libs/mysql");
+var uuid = require("node-uuid");
+
 
 /*
  * @service:  IWantToJoin
@@ -12,10 +15,53 @@ var service = express.Router();
  * @response: { "YouCanJoin": "1|0" }
  */
 service.post('/IWantToJoin', function(req, res, next) {
-  // just for test
-  // TODO
-  //    add code
-  res.send({"YouCanJoin": "1"});
+  // connect to db
+  mysql.getConnection(function(err, connection){
+    if (err) {
+      connection.release();
+      console.log('error');
+      res.json({"code" : 100, "status" : "Error in connection database"});
+      return;
+    }
+
+    console.log('connected as id ' + connection.threadId);
+        
+    // make a request
+    connection.query("select * from users where username='" + req.body.username + "'",function(err,result){
+      if(!err) {
+        if (result.length>0)
+        {
+          connection.release();
+          res.json({ "YouCanJoin": "0" });
+        }
+        else
+        {
+          // insert into mysql
+          var queryJson = req.body;
+          
+          queryJson.userid = uuid.v4();
+          
+          console.log(JSON.stringify(queryJson));
+          
+          var query = connection.query('insert into users set ? ', queryJson, function(err, result){
+            if (!err)
+            {
+              res.json(result);
+            }
+          });
+        }
+      }
+      else
+      {
+        connection.release();
+      }
+    });
+
+    connection.on('error', function(err) {      
+      res.json({"code" : 100, "status" : err.stack});
+      return;     
+    });
+  });
 });
 
 /*
@@ -29,7 +75,7 @@ service.post('/IWantToPlay', function(req, res, next) {
   // just for test
   // TODO
   //    add code
-  res.send({"YouCanPlay": "1"});
+  res.json({"YouCanPlay": "1"});
 });
 
 /*
@@ -43,7 +89,7 @@ service.post('/IWantToVisit', function(req, res, next) {
   // just for test
   // TODO
   //    add code
-  res.send(/* here goes the response */);
+  res.json(/* here goes the response */);
 });
 
 module.exports = service;

@@ -1,0 +1,1 @@
+create table users(userid varchar(36) NOT NULL, username text NOT NULL, password text NOT NULL, email text NOT NULL, PRIMARY KEY (userid)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
