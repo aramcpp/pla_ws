@@ -1,0 +1,1 @@
+create table actions(userid varchar(36) NOT NULL, areaid text NOT NULL, action text, actionValue text, PRIMARY KEY (userid)) ENGINE=InnoDB DEFAULT CHARSET=utf8;

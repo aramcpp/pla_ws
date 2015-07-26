@@ -20,22 +20,20 @@ service.post('/IWantToJoin', function(req, res, next) {
     if (err) {
       connection.release();
       console.log('error');
-      res.json({"code" : 100, "status" : "Error in connection database"});
+      res.json({"status" : "Error: cant connect to db"});
       return;
     }
 
     console.log('connected as id ' + connection.threadId);
         
     // make a request
-    connection.query("select * from users where username='" + req.body.username + "'",function(err,result){
+    connection.query('select * from users where username="' + req.body.username + '"',function(err,result){
       if(!err) {
-        if (result.length>0)
-        {
+        if (result.length>0) {
           connection.release();
           res.json({ "YouCanJoin": "0" });
         }
-        else
-        {
+        else {
           // insert into mysql
           var queryJson = req.body;
           
@@ -43,23 +41,30 @@ service.post('/IWantToJoin', function(req, res, next) {
           
           console.log(JSON.stringify(queryJson));
           
-          var query = connection.query('insert into users set ? ', queryJson, function(err, result){
-            if (!err)
-            {
+          connection.query('insert into users set ? ', queryJson, function(err, result){
+            if (!err) {
               connection.release();
               res.json(result);
+              
+              // insert user into actions table
+              connection.query('insert into actions values("' + queryJson.userid + '", "0", NULL, NULL)', function(err, result){
+                if (!err) {
+                  connection.release();
+                  res.json(result);
+                }
+              });
             }
           });
         }
       }
-      else
-      {
+      else {
         connection.release();
+        res.json({"status" : err.stack});
       }
     });
 
     connection.on('error', function(err) {      
-      res.json({"code" : 100, "status" : err.stack});
+      res.json({"status" : err.stack});
       return;     
     });
   });
@@ -78,34 +83,32 @@ service.post('/IWantToPlay', function(req, res, next) {
     if (err) {
       connection.release();
       console.log('error');
-      res.json({"code" : 100, "status" : "Error in connection database"});
+      res.json({"status" : "Error: cant connect to db"});
       return;
     }
 
     console.log('connected as id ' + connection.threadId);
         
     // make a request
-    connection.query("select * from users where username='" + req.body.username + "'",function(err,result){
+    connection.query('select * from users where username="' + req.body.username + '"',function(err,result){
       if(!err) {
-        if (result.length>0)
-        {
+        if (result.length>0) {
           connection.release();
           res.json({ "YouCanPlay": "1" });
         }
-        else
-        {
+        else {
           connection.release();
           res.json({ "YouCanPlay": "0" });
         }
       }
-      else
-      {
+      else {
         connection.release();
+        res.json({"status" : err.stack});
       }
     });
 
     connection.on('error', function(err) {      
-      res.json({"code" : 100, "status" : err.stack});
+      res.json({"status" : err.stack});
       return;     
     });
   });
@@ -119,10 +122,37 @@ service.post('/IWantToPlay', function(req, res, next) {
  * @response: returns the cat states for all the cats in current area
  */
 service.post('/IWantToVisit', function(req, res, next) {
-  // just for test
-  // TODO
-  //    add code
-  res.json(/* here goes the response */);
+  // connect to db
+  mysql.getConnection(function(err, connection){
+    if (err) {
+      connection.release();
+      console.log('error');
+      res.json({"status" : "Error: cant connect to db"});
+      return;
+    }
+
+    console.log('connected as id ' + connection.threadId);
+    
+    // make a request
+    connection.query('update actions set areaid = "' + req.body.areaid + '" where userid = "' + req.body.userid + '"',function(err,result){
+      if (!err) {
+        res.json({ "YouCanVisit": "1" });
+      }
+      else {
+        res.json({ "YouCanVisit": "0" });
+      }
+    });
+
+    connection.on('error', function(err) {      
+      res.json({"status" : err.stack});
+      return;     
+    });
+  });
+});
+
+// just to avoid 404, will implement other services later
+service.post('/*', function(req, res, next) {
+  res.json({ "status": "under development" });
 });
 
 module.exports = service;
