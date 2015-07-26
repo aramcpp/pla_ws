@@ -46,6 +46,7 @@ service.post('/IWantToJoin', function(req, res, next) {
           var query = connection.query('insert into users set ? ', queryJson, function(err, result){
             if (!err)
             {
+              connection.release();
               res.json(result);
             }
           });
@@ -72,10 +73,42 @@ service.post('/IWantToJoin', function(req, res, next) {
  * @response: { "YouCanPlay": "1|0" }
  */
 service.post('/IWantToPlay', function(req, res, next) {
-  // just for test
-  // TODO
-  //    add code
-  res.json({"YouCanPlay": "1"});
+  // connect to db
+  mysql.getConnection(function(err, connection){
+    if (err) {
+      connection.release();
+      console.log('error');
+      res.json({"code" : 100, "status" : "Error in connection database"});
+      return;
+    }
+
+    console.log('connected as id ' + connection.threadId);
+        
+    // make a request
+    connection.query("select * from users where username='" + req.body.username + "'",function(err,result){
+      if(!err) {
+        if (result.length>0)
+        {
+          connection.release();
+          res.json({ "YouCanPlay": "1" });
+        }
+        else
+        {
+          connection.release();
+          res.json({ "YouCanPlay": "0" });
+        }
+      }
+      else
+      {
+        connection.release();
+      }
+    });
+
+    connection.on('error', function(err) {      
+      res.json({"code" : 100, "status" : err.stack});
+      return;     
+    });
+  });
 });
 
 /*
