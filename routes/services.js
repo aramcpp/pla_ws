@@ -39,8 +39,6 @@ service.post('/IWantToJoin', function(req, res, next) {
           
           queryJson.userid = uuid.v4();
           
-          console.log(JSON.stringify(queryJson));
-          
           connection.query('insert into users set ? ', queryJson, function(err, result){
             if (!err) {
               connection.release();
@@ -141,9 +139,58 @@ service.post('/IWantToVisit', function(req, res, next) {
          * add WhatIsGoingOn service, and add its output after this services response
          */
         res.json({ "YouCanVisit": "1" });
+        // make a request for WhatIsGoingOn
+        connection.query('select * from action where areaid = "' + req.body.areaid + '"',function(err,result){
+          if (!err) {
+            resJson = result;
+            
+            resJson.YouCanVisit = "1";
+            
+            res.json(resJson);
+          }
+          else {
+            res.json({ "status": "error making request" });
+          }
+        });
       }
       else {
         res.json({ "YouCanVisit": "0" });
+      }
+    });
+
+    connection.on('error', function(err) {      
+      res.json({"status" : err.stack});
+      return;     
+    });
+  });
+});
+
+/*
+ * @service:  WhatIsGoingOn
+ * @desc:     show all the cat statuses in the given area
+ * @type:     GET
+ * @params:   JSON formatted areaid
+ * @response: returns the cat states for all the cats in current area
+ */
+service.get('/WhatIsGoingOn', function(req, res, next) {
+  // connect to db
+  mysql.getConnection(function(err, connection){
+    if (err) {
+      connection.release();
+      console.log('error');
+      res.json({"status" : "Error: cant connect to db"});
+      return;
+    }
+
+    console.log('connected as id ' + connection.threadId);
+    
+    // make a request
+    connection.query('select * from action where areaid = "' + req.body.areaid + '"',function(err,result){
+      if (!err) {
+        res.json(result);
+      }
+      else {
+        res.json({ "status": "error making request" });
       }
     });
 
