@@ -136,6 +136,10 @@ service.post('/IWantToVisit', function(req, res, next) {
     // make a request
     connection.query('update actions set areaid = "' + req.body.areaid + '" where userid = "' + req.body.userid + '"',function(err,result){
       if (!err) {
+        /*
+         * TODO
+         * add WhatIsGoingOn service, and add its output after this services response
+         */
         res.json({ "YouCanVisit": "1" });
       }
       else {
