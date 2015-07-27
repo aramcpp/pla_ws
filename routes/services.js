@@ -17,8 +17,7 @@ var usersModel = require("../dbmodels/usersModel")
 service.post('/IWantToJoin', function(req, res, next) {
   // connect to db
   
-  //usersModel.addUser(req.body, function(err, result){
-  usersModel.checkUserByName2(req.body.username, function(err, result){
+  usersModel.addUser(req.body, function(err, result){
     if (err) {
       console.log(err.stack);
     }
