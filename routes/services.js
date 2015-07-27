@@ -17,64 +17,19 @@ var usersModel = require("../dbmodels/usersModel")
 service.post('/IWantToJoin', function(req, res, next) {
   // connect to db
   
-  usersModel.addUser(req.body, function(err, result){
-    console.log(err.stack);
-    console.log(result);
-  });
-  
-  console.log(req.body);
-  
-  res.send('OK');
-  
-  /*mysql.getConnection(function(err, connection){
+  //usersModel.addUser(req.body, function(err, result){
+  usersModel.checkUserByName2(req.body.username, function(err, result){
     if (err) {
-      connection.release();
-      console.log('error');
-      res.json({"status" : "Error: cant connect to db"});
-      return;
+      console.log(err.stack);
     }
-
-    console.log('connected as id ' + connection.threadId);
-        
-    // make a request
-    connection.query('select * from users where username="' + req.body.username + '"',function(err,result){
-      if(!err) {
-        if (result.length>0) {
-          connection.release();
-          res.json({ "YouCanJoin": "0" });
-        }
-        else {
-          // insert into mysql
-          var queryJson = req.body;
-          
-          queryJson.userid = uuid.v4();
-          
-          connection.query('insert into users set ? ', queryJson, function(err, result){
-            if (!err) {
-              res.json(result);
-              
-              // insert user into actions table
-              connection.query('insert into actions values("' + queryJson.userid + '", "0", NULL, NULL)', function(err, result){
-                if (!err) {
-                  connection.release();
-                  //res.json(result);
-                }
-              });
-            }
-          });
-        }
-      }
-      else {
-        connection.release();
-        res.json({"status" : err.stack});
-      }
-    });
-
-    connection.on('error', function(err) {      
-      res.json({"status" : err.stack});
-      return;     
-    });
-  });*/
+    else {
+      // send corresponding response
+      if (result == 1)
+        res.send({ "YouCanJoin": "1" });
+      else
+        res.send({ "YouCanJoin": "0" });
+    }
+  });
 });
 
 /*
