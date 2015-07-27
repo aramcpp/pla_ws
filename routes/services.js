@@ -4,7 +4,7 @@
 var express = require('express');
 var service = express.Router();
 var mysql   = require("../libs/mysql");
-var uuid = require("node-uuid");
+var usersModel = require("../dbmodels/usersModel")
 
 
 /*
@@ -16,7 +16,17 @@ var uuid = require("node-uuid");
  */
 service.post('/IWantToJoin', function(req, res, next) {
   // connect to db
-  mysql.getConnection(function(err, connection){
+  
+  usersModel.addUser(req.body, function(err, result){
+    console.log(err.stack);
+    console.log(result);
+  });
+  
+  console.log(req.body);
+  
+  res.send('OK');
+  
+  /*mysql.getConnection(function(err, connection){
     if (err) {
       connection.release();
       console.log('error');
@@ -41,14 +51,13 @@ service.post('/IWantToJoin', function(req, res, next) {
           
           connection.query('insert into users set ? ', queryJson, function(err, result){
             if (!err) {
-              connection.release();
               res.json(result);
               
               // insert user into actions table
               connection.query('insert into actions values("' + queryJson.userid + '", "0", NULL, NULL)', function(err, result){
                 if (!err) {
                   connection.release();
-                  res.json(result);
+                  //res.json(result);
                 }
               });
             }
@@ -65,7 +74,7 @@ service.post('/IWantToJoin', function(req, res, next) {
       res.json({"status" : err.stack});
       return;     
     });
-  });
+  });*/
 });
 
 /*
@@ -142,7 +151,7 @@ service.post('/IWantToVisit', function(req, res, next) {
         // make a request for WhatIsGoingOn
         connection.query('select * from action where areaid = "' + req.body.areaid + '"',function(err,result){
           if (!err) {
-            resJson = result;
+            var resJson = result;
             
             resJson.YouCanVisit = "1";
             
