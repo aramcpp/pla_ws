@@ -3,10 +3,8 @@
 // loading dependencies
 var express = require('express');
 var service = express.Router();
-var mysql   = require("../libs/mysql");
-var usersModel = require("../dbmodels/usersModel")
-var actionsModel = require("../dbmodels/actionsModel")
-
+var usersModel = require("../dbmodels/usersModel");
+var actionsModel = require("../dbmodels/actionsModel");
 
 /*
  * @service:  IWantToJoin
