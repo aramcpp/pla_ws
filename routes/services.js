@@ -3,8 +3,11 @@
 // loading dependencies
 var express = require('express');
 var service = express.Router();
+
+// loading db models
 var usersModel = require("../dbmodels/usersModel");
 var actionsModel = require("../dbmodels/actionsModel");
+var friendsModel = require("../dbmodels/friendsModel");
 
 // Main Services
 
@@ -176,6 +179,32 @@ service.post('/WhatIAmDoing', function(req, res, next) {
 // end - Main Services
 
 // Friend Services
+
+/*
+ * @service:  IWantToBeFriend
+ * @desc:     sends friend request
+ * @type:     POST
+ * @params:   JSON formatted userids
+ * @response: returns {"YourWishSent": "1|0"}
+ */
+service.post('/IWantToBeFriend', function(req, res, next) {
+  // create query
+  var queryJson = req.body;
+  
+  queryJson.status = "pending";
+  
+  // call model function
+  friendsModel.setFriendStatus(queryJson, function(err, result){
+    if (!err) {
+      res.send({"YourWishSent": "1"});
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({"YourWishSent": "0"});
+    }
+  });
+});
 
 // end - Friend Services
 
