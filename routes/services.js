@@ -5,6 +5,7 @@ var express = require('express');
 var service = express.Router();
 var mysql   = require("../libs/mysql");
 var usersModel = require("../dbmodels/usersModel")
+var actionsModel = require("../dbmodels/actionsModel")
 
 
 /*
@@ -15,7 +16,7 @@ var usersModel = require("../dbmodels/usersModel")
  * @response: { "YouCanJoin": "1|0" }
  */
 service.post('/IWantToJoin', function(req, res, next) {
-  // connect to db
+  // call model function
   usersModel.addUser(req.body, function(err, result){
     if (err) {
       console.log(err.stack);
@@ -38,7 +39,7 @@ service.post('/IWantToJoin', function(req, res, next) {
  * @response: { "YouCanTakeThisName": "1|0" }
  */
 service.post('/CanITakeThisName', function(req, res, next) {
-  // connect to db
+  // call model function
   usersModel.checkUserByName(req.body.username, function(err, result){
     if (err) {
       console.log(err.stack);
@@ -62,7 +63,7 @@ service.post('/CanITakeThisName', function(req, res, next) {
  * @response: { "YouCanPlay": "1|0" }
  */
 service.post('/IWantToPlay', function(req, res, next) {
-  // connect to db
+  // call model function
   usersModel.checkUserPassword(req.body, function(err, result){
     if (err) {
       console.log(err.stack);
@@ -85,6 +86,7 @@ service.post('/IWantToPlay', function(req, res, next) {
  * @params:   JSON formatted user info and areaid
  * @response: returns the cat states for all the cats in current area
  */
+// TODO: change code to use model
 service.post('/IWantToVisit', function(req, res, next) {
   // connect to db
   mysql.getConnection(function(err, connection){
@@ -139,31 +141,47 @@ service.post('/IWantToVisit', function(req, res, next) {
  * @response: returns the cat states for all the cats in current area
  */
 service.get('/WhatIsGoingOn', function(req, res, next) {
-  // connect to db
-  mysql.getConnection(function(err, connection){
-    if (err) {
-      connection.release();
-      console.log('error');
-      res.json({"status" : "Error: cant connect to db"});
-      return;
+  // call model function
+  actionsModel.getAreaActions(req.body.areaid, function(err, result){
+    if (!err) {
+      res.send(result);
     }
+    else {
+      console.log(err.stack);
+      
+      res.send({});
+    }
+  });
+});
 
-    console.log('connected as id ' + connection.threadId);
-    
-    // make a request
-    connection.query('select * from action where areaid = "' + req.body.areaid + '"',function(err,result){
-      if (!err) {
-        res.json(result);
-      }
-      else {
-        res.json({ "status": "error making request" });
-      }
-    });
-
-    connection.on('error', function(err) {      
-      res.json({"status" : err.stack});
-      return;     
-    });
+/*
+ * @service:  WhatIAmDoing
+ * @desc:     processes the current status of user
+ * @type:     POST
+ * @params:   JSON formatted action info
+ * @response: returns the cat states for all the cats in current area
+ */
+service.post('/WhatIAmDoing', function(req, res, next) {
+  // call model function
+  actionsModel.setUserActions(req.body, function(err, result){
+    if (!err) {
+      // call model function
+      actionsModel.getAreaActions(req.body.areaid, function(err, result){
+        if (!err) {
+          res.send(result);
+        }
+        else {
+          console.log(err.stack);
+          
+          res.send({});
+        }
+      });
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({});
+    }
   });
 });
 

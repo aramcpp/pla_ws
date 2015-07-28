@@ -85,8 +85,6 @@ var checkUserPassword = function(userInfoJson, callback) {
   // make a request
   makeRequest('select * from users where username="' + userInfoJson.username + '" and password="' + userInfoJson.password + '"',function(err,result){
     if(!err) {
-      console.log(result);
-      
       if (result.length>0) {
         callback(null, 1);
       }
@@ -110,8 +108,6 @@ var checkUserByName = function(username, callback) {
   // make a request
   makeRequest('select * from users where username="' + username + '"',function(err,result){
     if(!err) {
-      console.log(result);
-      
       if (result.length>0) {
         callback(null, 1);
       }
@@ -135,8 +131,6 @@ var checkUserByID = function(userid, callback) {
   // make a request
   makeRequest('select * from users where userid="' + userid + '"',function(err,result){
     if(!err) {
-      console.log(result);
-      
       if (result.length>0) {
         callback(null, 1);
       }
