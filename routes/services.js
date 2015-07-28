@@ -83,12 +83,12 @@ service.post('/IWantToPlay', function(req, res, next) {
  * @service:  IWantToVisit
  * @desc:     changes the cat area
  * @type:     POST
- * @params:   JSON formatted user info and areaid
+ * @params:   JSON formatted userid and areaid
  * @response: returns the cat states for all the cats in current area
  */
 // TODO: change code to use model
 service.post('/IWantToVisit', function(req, res, next) {
-  // connect to db
+  /*// connect to db
   mysql.getConnection(function(err, connection){
     if (err) {
       connection.release();
@@ -102,10 +102,6 @@ service.post('/IWantToVisit', function(req, res, next) {
     // make a request
     connection.query('update actions set areaid = "' + req.body.areaid + '" where userid = "' + req.body.userid + '"',function(err,result){
       if (!err) {
-        /*
-         * TODO
-         * add WhatIsGoingOn service, and add its output after this services response
-         */
         res.json({ "YouCanVisit": "1" });
         // make a request for WhatIsGoingOn
         connection.query('select * from action where areaid = "' + req.body.areaid + '"',function(err,result){
@@ -130,6 +126,39 @@ service.post('/IWantToVisit', function(req, res, next) {
       res.json({"status" : err.stack});
       return;     
     });
+  });*/
+  
+  // creating a query JSON
+  var queryJson = req.body;
+  
+  queryJson.action = '';
+  
+  queryJson.actionValue = '';
+  
+  // call model function
+  actionsModel.setUserActions(queryJson, function(err, result){
+    if (!err) {
+      // call model function
+      actionsModel.getAreaActions(req.body.areaid, function(err, result){
+        if (!err) {
+          var resJson = result;
+          
+          resJson.YouCanVisit = "1";
+          
+          res.send(resJson);
+        }
+        else {
+          console.log(err.stack);
+          
+          res.send({"YouCanVisit": "0"});
+        }
+      });
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({});
+    }
   });
 });
 
