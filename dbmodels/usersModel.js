@@ -76,6 +76,31 @@ var addUser = function(userInfoJson, callback) {
 };
 
 /*
+ * @function: checkUserPassword
+ * @desc:     check if the login and password match
+ * @params:   JSON formatted username and password, callback function
+ * @callback: error and result
+ */
+var checkUserPassword = function(userInfoJson, callback) {
+  // make a request
+  makeRequest('select * from users where username="' + userInfoJson.username + '" and password="' + userInfoJson.password + '"',function(err,result){
+    if(!err) {
+      console.log(result);
+      
+      if (result.length>0) {
+        callback(null, 1);
+      }
+      else {
+        callback(null, 0);
+      }
+    }
+    else {
+      callback(err, null);
+    }
+  });
+};
+
+/*
  * @function: checkUserByName
  * @desc:     checks whether user with the given name exists or not
  * @params:   username and callback function
@@ -131,3 +156,5 @@ module.exports.addUser = addUser;
 module.exports.checkUserByName = checkUserByName;
 
 module.exports.checkUserByID = checkUserByID;
+
+module.exports.checkUserPassword = checkUserPassword;

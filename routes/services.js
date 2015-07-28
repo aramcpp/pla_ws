@@ -63,38 +63,18 @@ service.post('/CanITakeThisName', function(req, res, next) {
  */
 service.post('/IWantToPlay', function(req, res, next) {
   // connect to db
-  mysql.getConnection(function(err, connection){
+  usersModel.checkUserPassword(req.body, function(err, result){
     if (err) {
-      connection.release();
-      console.log('error');
-      res.json({"status" : "Error: cant connect to db"});
-      return;
+      console.log(err.stack);
     }
-
-    console.log('connected as id ' + connection.threadId);
-        
-    // make a request
-    connection.query('select * from users where username="' + req.body.username + '"',function(err,result){
-      if(!err) {
-        if (result.length>0) {
-          connection.release();
-          res.json({ "YouCanPlay": "1" });
-        }
-        else {
-          connection.release();
-          res.json({ "YouCanPlay": "0" });
-        }
-      }
-      else {
-        connection.release();
-        res.json({"status" : err.stack});
-      }
-    });
-
-    connection.on('error', function(err) {      
-      res.json({"status" : err.stack});
-      return;     
-    });
+    else {
+      console.log(result);
+      // send corresponding response
+      if (result == 1)
+        res.send({ "YouCanPlay": "0" });
+      else
+        res.send({ "YouCanPlay": "1" });
+    }
   });
 });
 
