@@ -16,7 +16,6 @@ var usersModel = require("../dbmodels/usersModel")
  */
 service.post('/IWantToJoin', function(req, res, next) {
   // connect to db
-  
   usersModel.addUser(req.body, function(err, result){
     if (err) {
       console.log(err.stack);
@@ -27,6 +26,30 @@ service.post('/IWantToJoin', function(req, res, next) {
         res.send({ "YouCanJoin": "1" });
       else
         res.send({ "YouCanJoin": "0" });
+    }
+  });
+});
+
+/*
+ * @service:  CanITakeThisName
+ * @desc:     checks whether the cat is in use or not
+ * @type:     POST
+ * @params:   JSON formatted username
+ * @response: { "YouCanTakeThisName": "1|0" }
+ */
+service.post('/CanITakeThisName', function(req, res, next) {
+  // connect to db
+  usersModel.checkUserByName(req.body.username, function(err, result){
+    if (err) {
+      console.log(err.stack);
+    }
+    else {
+      console.log(result);
+      // send corresponding response
+      if (result == 1)
+        res.send({ "YouCanTakeThisName": "0" });
+      else
+        res.send({ "YouCanTakeThisName": "1" });
     }
   });
 });

@@ -2,8 +2,14 @@
 var mysql = require("../libs/mysql");
 var uuid = require("node-uuid");
 
+/*
+ * @function: makeRequest
+ * @desc:     sends requst to mysql server
+ * @params:   sql request and callback function
+ * @callback: error and result
+ */
 var makeRequest = function(request, callback) {
-    // connect to db
+  // connect to db
   mysql.getConnection(function(err, connection){
     if (err) {
       connection.release();
@@ -24,61 +30,57 @@ var makeRequest = function(request, callback) {
   });
 };
 
+/*
+ * @function: addUser
+ * @desc:     adds user to db
+ * @params:   JSON formatted userinfo and callback function
+ * @callback: error and result
+ */
 var addUser = function(userInfoJson, callback) {
-    // connect to db
-  mysql.getConnection(function(err, connection){
-    if (err) {
-      connection.release();
-      console.log('error');
-      callback(null, 0);
-    }
-
-    console.log('connected as id ' + connection.threadId);
+  // check whether user exists or not
+  checkUserByName(userInfoJson.username, function(err, result){
+    if (!err) {
+      if (result == 1) {
+        callback(null, 0);
+      }
+      else {
+        // add uuid
+        var queryJson = userInfoJson;
         
-    // make a request
-    connection.query('select * from users where username="' + userInfoJson.userName + '"',function(err,result){
-      if(!err) {
-        if (result.length>0) {
-          connection.release();
-          callback(null, 0);
-        }
-        else {
-          // insert into mysql
-          var queryJson = userInfoJson;
-          
-          queryJson.userid = uuid.v4();
-          
-          console.log(queryJson.userid + '", "' + queryJson.userName + '", "' + queryJson.password + '", "' + queryJson.parentEMail + '", "' + queryJson.birthday + '", "' + queryJson.avatar + '", "' + queryJson.myLanguage + '", "' + queryJson.secondLanguage + '")');
-          
-          connection.query('insert into users values("' + queryJson.userid + '", "' + queryJson.username + '", "' + queryJson.password + '", "' + queryJson.parentEMail + '", "' + queryJson.birthday + '", "' + queryJson.avatar + '", "' + queryJson.myLanguage + '", "' + queryJson.secondLanguage + '")', function(err, result){
+        queryJson.userid = uuid.v4();
+        
+        // send requst to add user
+        makeRequest('insert into users values("' + queryJson.userid + '", "' + queryJson.username + '", "' + queryJson.password + '", "' + queryJson.parentEMail + '", "' + queryJson.birthday + '", "' + queryJson.avatar + '", "' + queryJson.myLanguage + '", "' + queryJson.secondLanguage + '")', function(err, result){
             if (!err) {
               // insert user into actions table
-              connection.query('insert into actions values("' + queryJson.userid + '", "0", NULL, NULL)', function(err, result){
-                if (!err) {
-                  connection.release();
+              makeRequest('insert into actions values("' + queryJson.userid + '", "0", NULL, NULL)', function(err, result){
+                // add some error handling here
+                if (err) {
+                  console.log(err.stack);
+                  callback(null, 0);
                 }
               });
               
-              console.log('11');
-              
               callback(null, 1);
             }
+            else {
+              callback(null, 0);
+            }
           });
-        }
       }
-      else {
-        connection.release();
-        callback(null, 0);
-      }
-    });
-
-    connection.on('error', function(err) {
-      //console.log(err.stack);
-      callback(err, 0);
-    });
+    }
+    else {
+      callback(err, null);
+    }
   });
 };
 
+/*
+ * @function: checkUserByName
+ * @desc:     checks whether user with the given name exists or not
+ * @params:   username and callback function
+ * @callback: error and result
+ */
 var checkUserByName = function(username, callback) {
   // make a request
   makeRequest('select * from users where username="' + username + '"',function(err,result){
@@ -98,37 +100,28 @@ var checkUserByName = function(username, callback) {
   });
 };
 
+/*
+ * @function: checkUserByName
+ * @desc:     checks whether user with the given id exists or not
+ * @params:   userid and callback function
+ * @callback: error and result
+ */
 var checkUserByID = function(userid, callback) {
-    // connect to db
-  mysql.getConnection(function(err, connection){
-    if (err) {
-      connection.release();
-      console.log('error');
-      callback(null, 0);
-    }
-
-    console.log('connected as id ' + connection.threadId);
-        
-    // make a request
-    connection.query('select * from users where userid="' + userid + '"',function(err,result){
-      if(!err) {
-        if (result.length>0) {
-          callback(null, 1);
-        }
-        else {
-          callback(null, 0);
-        }
+  // make a request
+  makeRequest('select * from users where userid="' + userid + '"',function(err,result){
+    if(!err) {
+      console.log(result);
+      
+      if (result.length>0) {
+        callback(null, 1);
       }
       else {
-        connection.release();
-        callback(err, null);
+        callback(null, 0);
       }
-    });
-
-    connection.on('error', function(err) {
-      //console.log(err.stack);
-      callback(err, 0);
-    });
+    }
+    else {
+      callback(err, null);
+    }
   });
 };
 
