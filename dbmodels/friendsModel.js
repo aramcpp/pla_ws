@@ -76,7 +76,7 @@ var setFriendStatus = function(friendInfoJson, callback) {
  * @callback: error and result
  */
 var getFriendsWithStatus = function(friendInfoJson, callback) {
-  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.firstFriendID + '" and secondFriendID="' + friendInfoJson.secondFriendID + '") or (firstFriendID="' + friendInfoJson.secondFriendID + '" and secondFriendID="' + friendInfoJson.firstFriendID + '")',function(err,result){
+  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.firstFriendID + '" or secondFriendID="' + friendInfoJson.secondFriendID + '") and status = "' + friendInfoJson.status + '"',function(err,result){
     if (!err) {
       console.log(result);
       

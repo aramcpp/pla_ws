@@ -206,6 +206,58 @@ service.post('/IWantToBeFriend', function(req, res, next) {
   });
 });
 
+/*
+ * @service:  IWantToAcceptFriend
+ * @desc:     accepts friend request
+ * @type:     POST
+ * @params:   JSON formatted userids
+ * @response: returns {"YouHaveAccepted": "1|0"}
+ */
+service.post('/IWantToAcceptFriend', function(req, res, next) {
+  // create query
+  var queryJson = req.body;
+  
+  queryJson.status = "friend";
+  
+  // call model function
+  friendsModel.setFriendStatus(queryJson, function(err, result){
+    if (!err) {
+      res.send({"YouHaveAccepted": "1"});
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({"YouHaveAccepted": "0"});
+    }
+  });
+});
+
+/*
+ * @service:  ShowMeMyFriends
+ * @desc:     gets the list of friends
+ * @type:     POST
+ * @params:   JSON formatted userid
+ * @response: returns {"YourFriends": [friends list]}
+ */
+service.post('/ShowMeMyFriends', function(req, res, next) {
+  // create query
+  var queryJson = req.body;
+  
+  queryJson.status = "friend";
+  
+  // call model function
+  friendsModel.getFriendsWithStatus(queryJson, function(err, result){
+    if (!err) {
+      res.send({"YourFriends": [result]});
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({"YourFriends": []});
+    }
+  });
+});
+
 // end - Friend Services
 
 // just to avoid 404, will implement other services later
