@@ -6,6 +6,8 @@ var service = express.Router();
 var usersModel = require("../dbmodels/usersModel");
 var actionsModel = require("../dbmodels/actionsModel");
 
+// Main Services
+
 /*
  * @service:  IWantToJoin
  * @desc:     registers the cat
@@ -170,6 +172,12 @@ service.post('/WhatIAmDoing', function(req, res, next) {
     }
   });
 });
+
+// end - Main Services
+
+// Friend Services
+
+// end - Friend Services
 
 // just to avoid 404, will implement other services later
 service.post('/*', function(req, res, next) {
