@@ -235,11 +235,11 @@ service.post('/IWantToAcceptFriend', function(req, res, next) {
 /*
  * @service:  ShowMeMyFriends
  * @desc:     gets the list of friends
- * @type:     POST
+ * @type:     GET
  * @params:   JSON formatted userid
  * @response: returns {"YourFriends": [friends list]}
  */
-service.post('/ShowMeMyFriends', function(req, res, next) {
+service.get('/ShowMeMyFriends', function(req, res, next) {
   // create query
   var queryJson = req.body;
   
