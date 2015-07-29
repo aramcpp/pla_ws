@@ -44,10 +44,7 @@ var addUser = function(userInfoJson, callback) {
         callback(null, 0);
       }
       else {
-        // add uuid
         var queryJson = userInfoJson;
-        
-        queryJson.userid = uuid.v4();
         
         // send requst to add user
         makeRequest('insert into users values("' + queryJson.userid + '", "' + queryJson.username + '", "' + queryJson.password + '", "' + queryJson.parentEMail + '", "' + queryJson.birthday + '", "' + queryJson.avatar + '", "' + queryJson.myLanguage + '", "' + queryJson.secondLanguage + '")', function(err, result){
@@ -83,10 +80,10 @@ var addUser = function(userInfoJson, callback) {
  */
 var checkUserPassword = function(userInfoJson, callback) {
   // make a request
-  makeRequest('select * from users where username="' + userInfoJson.username + '" and password="' + userInfoJson.password + '"',function(err,result){
+  makeRequest('select userid from users where username="' + userInfoJson.username + '" and password="' + userInfoJson.password + '"',function(err,result){
     if(!err) {
       if (result.length>0) {
-        callback(null, 1);
+        callback(null, result[0].userid);
       }
       else {
         callback(null, 0);

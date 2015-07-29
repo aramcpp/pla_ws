@@ -74,10 +74,11 @@ service.post('/IWantToPlay', function(req, res, next) {
     else {
       console.log(result);
       // send corresponding response
-      if (result == 1)
+      /*if (result == 1)
         res.send({ "YouCanPlay": "0" });
       else
-        res.send({ "YouCanPlay": "1" });
+        res.send({ "YouCanPlay": "1" });*/
+      res.send({ "YouCanPlay": result });
     }
   });
 });
