@@ -1,1 +1,1 @@
-create table friends(friendshipID varchar(36) NOT NULL, firstFriendID varchar(36) NOT NULL, secondFriendID varchar(36) NOT NULL, status text NOT NULL, PRIMARY KEY (friendshipID)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table friends(friendshipID varchar(36) NOT NULL, fromFriendID varchar(36) NOT NULL, toFriendID varchar(36) NOT NULL, status text NOT NULL, PRIMARY KEY (friendshipID)) ENGINE=InnoDB DEFAULT CHARSET=utf8;

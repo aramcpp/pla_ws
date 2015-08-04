@@ -283,20 +283,20 @@ service.post('/IWantToCheckFriend', function(req, res, next) {
 /*
  * @service:  ShowMeMyFriends
  * @desc:     gets the list of friends
- * @type:     GET
- * @params:   JSON formatted userid
+ * @type:     POST
+ * @params:   JSON formatted userid, and the optional parameter status
  * @response: returns {"YourFriends": [friends list]}
  */
-service.get('/ShowMeMyFriends', function(req, res, next) {
+service.post('/ShowMeMyFriends', function(req, res, next) {
   // create query
   var queryJson = req.body;
   
-  queryJson.status = "friend";
-  
+  queryJson.fromFriendID = req.body.userid;
+
   // call model function
-  friendsModel.getFriendsWithStatus(queryJson, function(err, result){
+  friendsModel.getAllFriends(queryJson, function(err, result){
     if (!err) {
-      res.send({"YourFriends": [result]});
+      res.send({"YourFriends": result});
     }
     else {
       console.log(err.stack);
@@ -375,8 +375,10 @@ service.post('/GetUserInfo/:field', function(req, res, next) {
 // end - Friend Services
 
 // just to test email
-service.post('/email_test', function(req, res, next) {
-  
+service.get('/email_test', function(req, res, next) {
+  mailer.sendMail("aramcpp@gmail.com", "registration", "<h1> asfdhaskdjfhsadkf </h1>", function(result){
+    res.send(result);
+  });
 });
 
 // just to avoid 404, will implement other services later

@@ -38,7 +38,7 @@ var uuid = require("node-uuid");
  */
 var setFriendStatus = function(friendInfoJson, callback) {
   // make a request
-  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" and secondFriendID="' + friendInfoJson.toFriendID + '") or (firstFriendID="' + friendInfoJson.toFriendID + '" and secondFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
+  makeRequest('select friendshipID from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" and toFriendID="' + friendInfoJson.toFriendID + '") or (fromFriendID="' + friendInfoJson.toFriendID + '" and toFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
     if (!err) {
       if (result.length > 0) {
         console.log(result);
@@ -77,7 +77,7 @@ var setFriendStatus = function(friendInfoJson, callback) {
  */
 var deleteFriend = function(friendInfoJson, callback) {
   // make a request
-  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" and secondFriendID="' + friendInfoJson.toFriendID + '") or (firstFriendID="' + friendInfoJson.toFriendID + '" and secondFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
+  makeRequest('select friendshipID from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" and toFriendID="' + friendInfoJson.toFriendID + '") or (fromFriendID="' + friendInfoJson.toFriendID + '" and toFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
     if (!err) {
       if (result.length > 0) {
         console.log(result);
@@ -105,7 +105,26 @@ var deleteFriend = function(friendInfoJson, callback) {
  * @callback: error and result
  */
 var getFriendsWithStatus = function(friendInfoJson, callback) {
-  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" or secondFriendID="' + friendInfoJson.fromFriendID + '") and status = "' + friendInfoJson.status + '"',function(err,result){
+  makeRequest('select * from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" or toFriendID="' + friendInfoJson.fromFriendID + '") and status = "' + friendInfoJson.status + '"',function(err,result){
+    if (!err) {
+      console.log(result);
+      
+      callback(null, result);
+    }
+    else {
+      callback(err, null);
+    }
+  });
+};
+
+/*
+ * @function: getAllFriends
+ * @desc:     gets the list of friends no matter what status
+ * @params:   JSON formatted userid
+ * @callback: error and result
+ */
+var getAllFriends = function(friendInfoJson, callback) {
+  makeRequest('select * from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" or toFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
     if (!err) {
       console.log(result);
       
@@ -124,7 +143,7 @@ var getFriendsWithStatus = function(friendInfoJson, callback) {
  * @callback: error and result
  */
 var getFriendsStatus = function(friendInfoJson, callback) {
-  makeRequest('select status from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" and secondFriendID="' + friendInfoJson.toFriendID + '") or (firstFriendID="' + friendInfoJson.toFriendID + '" and secondFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
+  makeRequest('select status from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" and toFriendID="' + friendInfoJson.toFriendID + '") or (fromFriendID="' + friendInfoJson.toFriendID + '" and toFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
     if (!err) {
       console.log(result);
       
@@ -140,6 +159,8 @@ var getFriendsStatus = function(friendInfoJson, callback) {
 module.exports.setFriendStatus = setFriendStatus;
 
 module.exports.getFriendsWithStatus = getFriendsWithStatus;
+
+module.exports.getAllFriends = getAllFriends;
 
 module.exports.getFriendsStatus = getFriendsStatus;
 
