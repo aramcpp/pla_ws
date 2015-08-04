@@ -43,7 +43,7 @@ var setFriendStatus = function(friendInfoJson, callback) {
       if (result.length > 0) {
         console.log(result);
         
-        makeRequest('update friends set status = "' + friendInfoJson.status + '" where friendshipID = "' + result.friendshipID + '"',function(err,result){
+        makeRequest('update friends set status = "' + friendInfoJson.status + '" where friendshipID = "' + result[0].friendshipID + '"',function(err,result){
           if (!err) {
             callback(null, 1);
           }
@@ -70,13 +70,42 @@ var setFriendStatus = function(friendInfoJson, callback) {
 };
 
 /*
+ * @function: deleteFriend
+ * @desc:     deletes the friends
+ * @params:   JSON formatted userids
+ * @callback: error and result
+ */
+var deleteFriend = function(friendInfoJson, callback) {
+  // make a request
+  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" and secondFriendID="' + friendInfoJson.toFriendID + '") or (firstFriendID="' + friendInfoJson.toFriendID + '" and secondFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
+    if (!err) {
+      if (result.length > 0) {
+        console.log(result);
+        
+        makeRequest('delete from friends where friendshipID = "' + result[0].friendshipID + '"',function(err,result){
+          if (!err) {
+            callback(null, 1);
+          }
+          else {
+            callback(err, null);
+          }
+        });
+      }
+    }
+    else {
+      callback(err,null);
+    }
+  });
+};
+
+/*
  * @function: getFriendsWithStatus
  * @desc:     gets the list of friends with the given status
  * @params:   JSON formatted userid and friend status
  * @callback: error and result
  */
 var getFriendsWithStatus = function(friendInfoJson, callback) {
-  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.firstFriendID + '" or secondFriendID="' + friendInfoJson.secondFriendID + '") and status = "' + friendInfoJson.status + '"',function(err,result){
+  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" or secondFriendID="' + friendInfoJson.fromFriendID + '") and status = "' + friendInfoJson.status + '"',function(err,result){
     if (!err) {
       console.log(result);
       
@@ -88,7 +117,30 @@ var getFriendsWithStatus = function(friendInfoJson, callback) {
   });
 };
 
+/*
+ * @function: getFriendsStatus
+ * @desc:     gets the status of friendship
+ * @params:   JSON formatted userid and friend status
+ * @callback: error and result
+ */
+var getFriendsStatus = function(friendInfoJson, callback) {
+  makeRequest('select status from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" and secondFriendID="' + friendInfoJson.toFriendID + '") or (firstFriendID="' + friendInfoJson.toFriendID + '" and secondFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
+    if (!err) {
+      console.log(result);
+      
+      callback(null, result[0].status);
+    }
+    else {
+      callback(err, null);
+    }
+  });
+};
+
 // model function exports
 module.exports.setFriendStatus = setFriendStatus;
 
 module.exports.getFriendsWithStatus = getFriendsWithStatus;
+
+module.exports.getFriendsStatus = getFriendsStatus;
+
+module.exports.deleteFriend = deleteFriend;

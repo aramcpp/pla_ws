@@ -9,6 +9,9 @@ var usersModel = require("../dbmodels/usersModel");
 var actionsModel = require("../dbmodels/actionsModel");
 var friendsModel = require("../dbmodels/friendsModel");
 
+// just for test
+var mailer = require("../libs/mailer");
+
 // Main Services
 
 /*
@@ -187,7 +190,7 @@ service.post('/WhatIAmDoing', function(req, res, next) {
 service.post('/IWantToBeFriend', function(req, res, next) {
   // create query
   var queryJson = req.body;
-  
+
   queryJson.status = "pending";
   
   // call model function
@@ -204,27 +207,75 @@ service.post('/IWantToBeFriend', function(req, res, next) {
 });
 
 /*
- * @service:  IWantToAcceptFriend
- * @desc:     accepts friend request
+ * @service:  IWantToSetFriendStatus
+ * @desc:     sets the friends status
  * @type:     POST
  * @params:   JSON formatted userids
- * @response: returns {"YouHaveAccepted": "1|0"}
+ * @response: returns {"YourFriendStatusSet": "1|0"}
  */
-service.post('/IWantToAcceptFriend', function(req, res, next) {
+service.post('/IWantToSetFriendStatus', function(req, res, next) {
   // create query
   var queryJson = req.body;
+
+  if (req.body.status != "")
+    queryJson.status = req.body.status;
+  else
+    queryJson.status = "pending";
   
-  queryJson.status = "friend";
+  console.log(queryJson.status);
   
   // call model function
   friendsModel.setFriendStatus(queryJson, function(err, result){
     if (!err) {
-      res.send({"YouHaveAccepted": "1"});
+      res.send({"YourFriendStatusSet": "1"});
     }
     else {
       console.log(err.stack);
       
-      res.send({"YouHaveAccepted": "0"});
+      res.send({"YourFriendStatusSet": "0"});
+    }
+  });
+});
+
+/*
+ * @service:  IWantToDeleteThisFriend
+ * @desc:     delete friends
+ * @type:     POST
+ * @params:   JSON formatted userids
+ * @response: returns {"ThisFriendIsDeleted": "1|0"}
+ */
+service.post('/IWantToDeleteThisFriend', function(req, res, next) {
+  // call model function
+  friendsModel.deleteFriend(req.body, function(err, result){
+    if (!err) {
+      res.send({"ThisFriendIsDeleted": "1"});
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({"ThisFriendIsDeleted": "0"});
+    }
+  });
+});
+
+/*
+ * @service:  IWantToCheckFriend
+ * @desc:     returns the status of given friends
+ * @type:     POST
+ * @params:   JSON formatted userid
+ * @response: returns {"YourFriendshipStatus": status}
+ */
+service.post('/IWantToCheckFriend', function(req, res, next) {
+  // call model function
+  friendsModel.getFriendsStatus(req.body, function(err, result){
+    if (!err) {
+      console.log({"YourFriendshipStatus": result});
+      res.send({"YourFriendshipStatus": result});
+    }
+    else {
+      console.log(err.stack);
+      
+      res.send({ });
     }
   });
 });
@@ -322,6 +373,11 @@ service.post('/GetUserInfo/:field', function(req, res, next) {
 });
 
 // end - Friend Services
+
+// just to test email
+service.post('/email_test', function(req, res, next) {
+  
+});
 
 // just to avoid 404, will implement other services later
 service.post('/*', function(req, res, next) {
