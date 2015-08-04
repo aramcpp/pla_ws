@@ -1,5 +1,5 @@
 // loading dependencies
-var mysql = require("mysql")
+var mysql = require("mysql");
 
 var pool = mysql.createPool({
     connectionLimit : 1000,

@@ -38,7 +38,7 @@ var uuid = require("node-uuid");
  */
 var setFriendStatus = function(friendInfoJson, callback) {
   // make a request
-  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.firstFriendID + '" and secondFriendID="' + friendInfoJson.secondFriendID + '") or (firstFriendID="' + friendInfoJson.secondFriendID + '" and secondFriendID="' + friendInfoJson.firstFriendID + '")',function(err,result){
+  makeRequest('select friendshipID from friends where (firstFriendID="' + friendInfoJson.fromFriendID + '" and secondFriendID="' + friendInfoJson.toFriendID + '") or (firstFriendID="' + friendInfoJson.toFriendID + '" and secondFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
     if (!err) {
       if (result.length > 0) {
         console.log(result);
@@ -53,7 +53,7 @@ var setFriendStatus = function(friendInfoJson, callback) {
         });
       }
       else {
-        makeRequest('insert into friends values("' + uuid.v4() + '", "' + friendInfoJson.firstFriendID + '", "' + friendInfoJson.secondFriendID + '", "' + friendInfoJson.status + '")',function(err,result){
+        makeRequest('insert into friends values("' + uuid.v4() + '", "' + friendInfoJson.fromFriendID + '", "' + friendInfoJson.toFriendID + '", "' + friendInfoJson.status + '")',function(err,result){
           if (!err) {
             callback(null, 1);
           }

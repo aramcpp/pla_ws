@@ -1,6 +1,5 @@
 // loading dependencies
 var mysql = require("../libs/mysql");
-var uuid = require("node-uuid");
 
 /*
  * @function: makeRequest
@@ -12,8 +11,8 @@ var makeRequest = function(request, callback) {
   // connect to db
   mysql.getConnection(function(err, connection){
     if (err) {
+      console.log('error: ' + err.stack);
       connection.release();
-      console.log('error');
       callback(err, null);
     }
     
@@ -24,7 +23,8 @@ var makeRequest = function(request, callback) {
     });
 
     connection.on('error', function(err) {
-      //console.log(err.stack);
+      console.log(err.stack);
+      
       callback(err, null);
     });
   });
@@ -106,7 +106,7 @@ var checkUserByName = function(username, callback) {
   makeRequest('select * from users where username="' + username + '"',function(err,result){
     if(!err) {
       if (result.length>0) {
-        callback(null, 1);
+        callback(null, result[0].userid);
       }
       else {
         callback(null, 0);
@@ -129,7 +129,30 @@ var checkUserByID = function(userid, callback) {
   makeRequest('select * from users where userid="' + userid + '"',function(err,result){
     if(!err) {
       if (result.length>0) {
-        callback(null, 1);
+        callback(null, result[0].userid);
+      }
+      else {
+        callback(null, 0);
+      }
+    }
+    else {
+      callback(err, null);
+    }
+  });
+};
+
+/*
+ * @function: getUserInfo
+ * @desc:     gets the user info, if the field is specified only info about that field
+ * @params:   userid, field and callback function (if the field is * returns all)
+ * @callback: error and result
+ */
+var getUserInfo = function(userid, field, callback) {
+  // make a request
+  makeRequest('select ' + field + ' from users where userid="' + userid + '"',function(err,result){
+    if(!err) {
+      if (result.length>0) {
+        callback(null, result[0]);
       }
       else {
         callback(null, 0);
@@ -149,3 +172,5 @@ module.exports.checkUserByName = checkUserByName;
 module.exports.checkUserByID = checkUserByID;
 
 module.exports.checkUserPassword = checkUserPassword;
+
+module.exports.getUserInfo = getUserInfo;

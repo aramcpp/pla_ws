@@ -1,0 +1,1 @@
+create table notifications(notificationID varchar(36) NOT NULL, receiverID varchar(36) NOT NULL, senderID varchar(36) NOT NULL, notificationText text NOT NULL, endTime text, PRIMARY KEY (notificationID)) ENGINE=InnoDB DEFAULT CHARSET=utf8;

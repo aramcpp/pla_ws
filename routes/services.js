@@ -26,7 +26,7 @@ service.post('/IWantToJoin', function(req, res, next) {
     }
     else {
       // send corresponding response
-      if (result == 1)
+      if (result != 0)
         res.send({ "YouCanJoin": "1" });
       else
         res.send({ "YouCanJoin": "0" });
@@ -50,7 +50,7 @@ service.post('/CanITakeThisName', function(req, res, next) {
     else {
       console.log(result);
       // send corresponding response
-      if (result == 1)
+      if (result != 0)
         res.send({ "YouCanTakeThisName": "0" });
       else
         res.send({ "YouCanTakeThisName": "1" });
@@ -74,10 +74,6 @@ service.post('/IWantToPlay', function(req, res, next) {
     else {
       console.log(result);
       // send corresponding response
-      /*if (result == 1)
-        res.send({ "YouCanPlay": "0" });
-      else
-        res.send({ "YouCanPlay": "1" });*/
       res.send({ "YouCanPlay": result });
     }
   });
@@ -255,6 +251,72 @@ service.get('/ShowMeMyFriends', function(req, res, next) {
       console.log(err.stack);
       
       res.send({"YourFriends": []});
+    }
+  });
+});
+
+/*
+ * @service:  IsThereSuchUser
+ * @desc:     checks whether user exists or not
+ * @type:     GET
+ * @params:   JSON formatted userid
+ * @response: returns {"ThereIsSuchUser": "userid|0"}
+ */
+service.post('/IsThereSuchUser', function(req, res, next) {
+  // call model function
+  usersModel.checkUserByName(req.body.username, function(err, result){
+    if (err) {
+      console.log(err.stack);
+    }
+    else {
+      console.log(result);
+      // send corresponding response
+      if (result != 0)
+        res.send({ "ThereIsSuchUser": result });
+      else
+        res.send({ "ThereIsSuchUser": "0" });
+    }
+  });
+});
+
+/*
+ * @service:  GetUserInfo
+ * @desc:     returns the user info
+ * @type:     POST
+ * @params:   JSON formatted userid
+ * @response: returns JSON formatted userinfo
+ */
+service.post('/GetUserInfo', function(req, res, next) {
+  // call model function
+  usersModel.getUserInfo(req.body.userid, '*', function(err, result){
+    if (err) {
+      console.log(err.stack);
+    }
+    else {
+      console.log(result);
+      // send corresponding response
+      res.send(result);
+    }
+  });
+});
+
+/*
+ * @service:  GetUserInfo/field*
+ * @desc:     returns the info about the specified field
+ * @type:     POST
+ * @params:   JSON formatted userid
+ * @response: returns JSON formatted info
+ */
+service.post('/GetUserInfo/:field', function(req, res, next) {
+  // call model function
+  usersModel.getUserInfo(req.body.userid, req.params.field, function(err, result){
+    if (err) {
+      console.log(err.stack);
+    }
+    else {
+      console.log(result);
+      // send corresponding response
+      res.send(result);
     }
   });
 });
