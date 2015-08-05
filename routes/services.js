@@ -9,6 +9,9 @@ var usersModel = require("../dbmodels/usersModel");
 var actionsModel = require("../dbmodels/actionsModel");
 var friendsModel = require("../dbmodels/friendsModel");
 
+// loading db sync models
+var friendsSyncModel = require("../dbmodels/friendsSyncModel");
+
 // just for test
 var mailer = require("../libs/mailer");
 
@@ -20,6 +23,7 @@ var mailer = require("../libs/mailer");
  * @type:     POST
  * @params:   JSON formatted user info
  * @response: { "YouCanJoin": "1|0" }
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToJoin', function(req, res, next) {
   // call model function
@@ -43,6 +47,7 @@ service.post('/IWantToJoin', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted username
  * @response: { "YouCanTakeThisName": "1|0" }
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/CanITakeThisName', function(req, res, next) {
   // call model function
@@ -67,6 +72,7 @@ service.post('/CanITakeThisName', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted user info
  * @response: { "YouCanPlay": "1|0" }
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToPlay', function(req, res, next) {
   // call model function
@@ -88,6 +94,7 @@ service.post('/IWantToPlay', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userid and areaid
  * @response: returns the cat states for all the cats in current area
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToVisit', function(req, res, next) {
   // creating a query JSON
@@ -130,6 +137,7 @@ service.post('/IWantToVisit', function(req, res, next) {
  * @type:     GET
  * @params:   JSON formatted areaid
  * @response: returns the cat states for all the cats in current area
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.get('/WhatIsGoingOn', function(req, res, next) {
   // call model function
@@ -151,6 +159,7 @@ service.get('/WhatIsGoingOn', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted action info
  * @response: returns the cat states for all the cats in current area
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/WhatIAmDoing', function(req, res, next) {
   // call model function
@@ -186,6 +195,7 @@ service.post('/WhatIAmDoing', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userids
  * @response: returns {"YourWishSent": "1|0"}
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToBeFriend', function(req, res, next) {
   // create query
@@ -212,6 +222,7 @@ service.post('/IWantToBeFriend', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userids
  * @response: returns {"YourFriendStatusSet": "1|0"}
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToSetFriendStatus', function(req, res, next) {
   // create query
@@ -243,6 +254,7 @@ service.post('/IWantToSetFriendStatus', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userids
  * @response: returns {"ThisFriendIsDeleted": "1|0"}
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToDeleteThisFriend', function(req, res, next) {
   // call model function
@@ -264,6 +276,7 @@ service.post('/IWantToDeleteThisFriend', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userid
  * @response: returns {"YourFriendshipStatus": status}
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IWantToCheckFriend', function(req, res, next) {
   // call model function
@@ -286,6 +299,7 @@ service.post('/IWantToCheckFriend', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userid, and the optional parameter status
  * @response: returns {"YourFriends": [friends list]}
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/ShowMeMyFriends', function(req, res, next) {
   // create query
@@ -312,6 +326,7 @@ service.post('/ShowMeMyFriends', function(req, res, next) {
  * @type:     GET
  * @params:   JSON formatted userid
  * @response: returns {"ThereIsSuchUser": "userid|0"}
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/IsThereSuchUser', function(req, res, next) {
   // call model function
@@ -336,6 +351,7 @@ service.post('/IsThereSuchUser', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userid
  * @response: returns JSON formatted userinfo
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/GetUserInfo', function(req, res, next) {
   // call model function
@@ -357,6 +373,7 @@ service.post('/GetUserInfo', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userid
  * @response: returns JSON formatted info
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/GetUserInfo/:field', function(req, res, next) {
   // call model function
@@ -389,6 +406,7 @@ service.get('/email_test', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted userid
  * @response: returns JSON formatted info
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.get('/getCurrentServerTime', function(req, res, next) {
   //send the time
@@ -401,9 +419,22 @@ service.get('/getCurrentServerTime', function(req, res, next) {
  * @type:     POST
  * @params:   JSON formatted notifications
  * @response: { "updateStatus": "1|0", "serverTime": "currentTime" }
+ * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/SendNotificationsToServer', function(req, res, next) {
-  res.json({ "status": "under development" });
+  var syncJson = req.body;
+  
+  // for now we only have friendsActivity sync, so we will process only that
+  friendsSyncModel.updateFriendsData(syncJson.friendsActivity, function(err, result) {
+    if (!err) {
+      // no error, everything is OK
+      res.send({"updateStatus": "1", "serverTime": Date.now()});
+    }
+    else {
+      // some errors, sending back that update failed
+      res.send({"updateStatus": "0", "serverTime": Date.now()});
+    }
+  });
 });
 
 //////////////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@ var mysql = require("../libs/mysql");
  * @desc:     sends requst to mysql server
  * @params:   sql request and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var makeRequest = function(request, callback) {
   // connect to db
@@ -35,6 +36,7 @@ var makeRequest = function(request, callback) {
  * @desc:     adds user to db
  * @params:   JSON formatted userinfo and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var addUser = function(userInfoJson, callback) {
   // check whether user exists or not
@@ -77,6 +79,7 @@ var addUser = function(userInfoJson, callback) {
  * @desc:     check if the login and password match
  * @params:   JSON formatted username and password, callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var checkUserPassword = function(userInfoJson, callback) {
   // make a request
@@ -100,6 +103,7 @@ var checkUserPassword = function(userInfoJson, callback) {
  * @desc:     checks whether user with the given name exists or not
  * @params:   username and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var checkUserByName = function(username, callback) {
   // make a request
@@ -123,6 +127,7 @@ var checkUserByName = function(username, callback) {
  * @desc:     checks whether user with the given id exists or not
  * @params:   userid and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var checkUserByID = function(userid, callback) {
   // make a request
@@ -146,6 +151,7 @@ var checkUserByID = function(userid, callback) {
  * @desc:     gets the user info, if the field is specified only info about that field
  * @params:   userid, field and callback function (if the field is * returns all)
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var getUserInfo = function(userid, field, callback) {
   // make a request

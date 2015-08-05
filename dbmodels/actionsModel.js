@@ -12,6 +12,7 @@ var mysql = require("../libs/mysql");
  * @desc:     sends requst to mysql server
  * @params:   sql request and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var makeRequest = function(request, callback) {
   // connect to db
@@ -40,6 +41,7 @@ var makeRequest = function(request, callback) {
  * @desc:     gets the list of actions in the given area 
  * @params:   areaid
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var getAreaActions = function(areaid, callback) {
     // make a request
@@ -53,6 +55,7 @@ var getAreaActions = function(areaid, callback) {
  * @desc:     updates the user actions
  * @params:   json formatted action info
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var setUserActions = function(actionInfoJson, callback) {
     // make a request

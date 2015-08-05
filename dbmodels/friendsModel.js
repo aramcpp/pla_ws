@@ -7,6 +7,7 @@ var uuid = require("node-uuid");
  * @desc:     sends requst to mysql server
  * @params:   sql request and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
  var makeRequest = function(request, callback) {
   // connect to db
@@ -35,6 +36,7 @@ var uuid = require("node-uuid");
  * @desc:     sets the status of the given friends, or adds friends with given status
  * @params:   JSON formatted userids and friend status
  * @callback: error and result
+ * @author: Aram (aramcpp@gmail.com)
  */
 var setFriendStatus = function(friendInfoJson, callback) {
   // make a request
@@ -74,6 +76,7 @@ var setFriendStatus = function(friendInfoJson, callback) {
  * @desc:     deletes the friends
  * @params:   JSON formatted userids
  * @callback: error and result
+ * @author: Aram (aramcpp@gmail.com)
  */
 var deleteFriend = function(friendInfoJson, callback) {
   // make a request
@@ -103,6 +106,7 @@ var deleteFriend = function(friendInfoJson, callback) {
  * @desc:     gets the list of friends with the given status
  * @params:   JSON formatted userid and friend status
  * @callback: error and result
+ * @author: Aram (aramcpp@gmail.com)
  */
 var getFriendsWithStatus = function(friendInfoJson, callback) {
   makeRequest('select * from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" or toFriendID="' + friendInfoJson.fromFriendID + '") and status = "' + friendInfoJson.status + '"',function(err,result){
@@ -122,6 +126,7 @@ var getFriendsWithStatus = function(friendInfoJson, callback) {
  * @desc:     gets the list of friends no matter what status
  * @params:   JSON formatted userid
  * @callback: error and result
+ * @author: Aram (aramcpp@gmail.com)
  */
 var getAllFriends = function(friendInfoJson, callback) {
   makeRequest('select * from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" or toFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){
@@ -141,6 +146,7 @@ var getAllFriends = function(friendInfoJson, callback) {
  * @desc:     gets the status of friendship
  * @params:   JSON formatted userid and friend status
  * @callback: error and result
+ * @author: Aram (aramcpp@gmail.com)
  */
 var getFriendsStatus = function(friendInfoJson, callback) {
   makeRequest('select status from friends where (fromFriendID="' + friendInfoJson.fromFriendID + '" and toFriendID="' + friendInfoJson.toFriendID + '") or (fromFriendID="' + friendInfoJson.toFriendID + '" and toFriendID="' + friendInfoJson.fromFriendID + '")',function(err,result){

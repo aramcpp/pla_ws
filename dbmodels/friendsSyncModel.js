@@ -6,6 +6,7 @@ var mysql = require("../libs/mysql");
  * @desc:     sends requst to mysql server
  * @params:   sql request and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var makeRequest = function(request, callback) {
   // connect to db
@@ -32,9 +33,9 @@ var makeRequest = function(request, callback) {
 /*
  * @function: updateFriendEntry
  * @desc:     updates a single friend entry if it exists, or creates it otherwise
- * @params:   sql request and callback function
+ * @params:   JSON formatted entry info
  * @callback: error and result
- * @author: Aram (aramcpp@gmail.com)
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var updateFriendEntry = function(friendEntryJson, callback) {
   // check whether entry exists
@@ -43,7 +44,17 @@ var updateFriendEntry = function(friendEntryJson, callback) {
       if (result.length > 0) {
         // entry exists, we need to update it
         
-        makeRequest('select friendshipID from friends where friendshipID = "' + friendEntryJson.friendshipID + '"', function(err, result) {
+        makeRequest('update friends set status = "' + friendEntryJson.status + '" where friendshipID = "' + friendEntryJson.friendshipID + '"', function(err, result) {
+            if (!err) {
+              // no error, we got it!
+              callback(null, 1);
+            }
+            else {
+              // some error occured, logging and sending
+              console.log(err.stack);
+              
+              callback(null, 1);
+            }
         });
       }
       else {
@@ -59,3 +70,26 @@ var updateFriendEntry = function(friendEntryJson, callback) {
     }
   });
 };
+
+/*
+ * @function: updateFriendsData
+ * @desc:     updates all the given friend pairs
+ * @params:   JSON formatted friends data
+ * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
+ */
+var updateFriendsData = function(friendDataJson, callback) {
+  // process all the entries
+  for (var i = 0; i < friendDataJson.length; i++) {
+    // call updateFriendEntry for each
+    updateFriendEntry(friendDataJson[i], function(err, result) {
+      if (err) {
+        callback(err, null);
+      }
+    });
+  }
+  
+  callback(null, 1);
+};
+
+module.exports.updateFriendsData = updateFriendsData;

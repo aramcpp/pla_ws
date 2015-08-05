@@ -6,6 +6,7 @@ var mysql = require("../libs/mysql");
  * @desc:     sends requst to mysql server
  * @params:   sql request and callback function
  * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
  */
 var makeRequest = function(request, callback) {
   // connect to db

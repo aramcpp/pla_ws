@@ -4,6 +4,13 @@ var mandrill = require("mandrill-api/mandrill");
 // init mandrill client
 var mandrill_client = new mandrill.Mandrill('0vOuvuBYFAzrHB7iVwWL-Q');
 
+/*
+ * @function: sendMail
+ * @desc:     just sends email
+ * @params:   email rcpt, subject, html content, callback
+ * @callback: error and result
+ * @author:   Aram (aramcpp@gmail.com)
+ */
 var sendMail = function(toEmail, subject, contentHtml, callback) {
     // create message
     var message = {
