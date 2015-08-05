@@ -1,0 +1,3 @@
+# add activation html template here
+# don't forget to inline css
+# and wrap all the dynamic data in `{ field: data }`

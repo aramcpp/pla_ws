@@ -1,5 +1,2 @@
-MAIN TASKS
-    Test the services
-    
-SECONDARY TASKS
-    Create Notifications scheme/model/services
+MAIN TASK
+    make a notification sync for friends, emails and userSettings

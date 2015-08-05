@@ -1,0 +1,29 @@
+{
+    "friendActivity": [
+        {
+            "friendshipID": "6as5d4f6as5df46as5df46as5d4f",
+            "fromFriendID": "5sa6df46sad54f6s5ad4f",
+            "toFriendID": "546879s5d4f6sdf79",
+            "status": "pending"
+        }
+    ],
+    "emailActivity": [
+        {
+            "emailID": "as5df46asd5f4",
+            "fromUserID": "5sa6df46sad54f6s5ad4f",
+            "toUserID": "546879s5d4f6sdf79",
+            "postCardID": "546879s5d4f6sdf79",
+            "status": "pending"
+        }
+    ],
+    "userSettings": {
+        "userid": "as65d4fa6sd54ga6sd54",
+        "myLanguage": "eng",
+        "username": "sadfsad",
+        "birthday": "13/05",
+        "avatar": "icecream",
+        "learningLanguage": "hy",
+        "password": "sdfsa8974",
+        "parentEMail": "asdfasd@sadgsd.com"
+    }
+}

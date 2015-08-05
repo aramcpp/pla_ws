@@ -1,11 +1,5 @@
-/*
- * maybe need to delete this?
- * we don't have any services connected to notifications
- */
-
 // loading dependencies
 var mysql = require("../libs/mysql");
-var uuid = require("node-uuid");
 
 /*
  * @function: makeRequest
@@ -35,11 +29,3 @@ var makeRequest = function(request, callback) {
   });
 };
 
-/*
- * @function: createNotification
- * @desc:     creates a new notification
- * @params:   JSON formatted notification info and callback function
- * @callback: error and result
- */
-var createNotification = function(notificationInfoJson, callback) {
-};

@@ -381,6 +381,33 @@ service.get('/email_test', function(req, res, next) {
   });
 });
 
+//////////////////////////////////////////////////////////////////////////////////////
+
+/*
+ * @service:  getCurrentServerTime
+ * @desc:     returns the current server time
+ * @type:     POST
+ * @params:   JSON formatted userid
+ * @response: returns JSON formatted info
+ */
+service.get('/getCurrentServerTime', function(req, res, next) {
+  //send the time
+  res.send({"currentServerTime": Date.now()});
+});
+
+/*
+ * @service:  sendNotificationsToServer
+ * @desc:     returns update status and current server time for the request
+ * @type:     POST
+ * @params:   JSON formatted notifications
+ * @response: { "updateStatus": "1|0", "serverTime": "currentTime" }
+ */
+service.post('/SendNotificationsToServer', function(req, res, next) {
+  res.json({ "status": "under development" });
+});
+
+//////////////////////////////////////////////////////////////////////////////////////
+
 // just to avoid 404, will implement other services later
 service.post('/*', function(req, res, next) {
   res.json({ "status": "under development" });
