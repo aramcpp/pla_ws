@@ -422,17 +422,62 @@ service.get('/getCurrentServerTime', function(req, res, next) {
  * @author:   Aram (aramcpp@gmail.com)
  */
 service.post('/SendNotificationsToServer', function(req, res, next) {
+  console.log(req.body);
   var syncJson = req.body;
   
+  // add updateTime
+  var updateTime = Date.now();
+  
+  console.log(syncJson);
+  
+  // DEBUG output
+  console.log(syncJson);
+  
+  syncJson.friendActivity.updateTime = updateTime;
+  
   // for now we only have friendsActivity sync, so we will process only that
-  friendsSyncModel.updateFriendsData(syncJson.friendsActivity, function(err, result) {
+  friendsSyncModel.updateFriendsData(syncJson.friendActivity, function(err, result) {
     if (!err) {
       // no error, everything is OK
-      res.send({"updateStatus": "1", "serverTime": Date.now()});
+      res.send({"updateStatus": "1", "serverTime": updateTime});
     }
     else {
       // some errors, sending back that update failed
-      res.send({"updateStatus": "0", "serverTime": Date.now()});
+      res.send({"updateStatus": "0", "serverTime": updateTime});
+    }
+  });
+});
+
+/*
+ * @service:  GetNotificationsFromServer
+ * @desc:     returns all the updated notifications
+ * @type:     POST
+ * @params:   JSON formatted userid and last update time
+ * @response: JSON formatted updates
+ * @author:   Aram (aramcpp@gmail.com)
+ */
+service.post('/GetNotificationsFromServer', function(req, res, next) {
+  // now we just have friends
+  var responseJson = {};
+  
+  friendsSyncModel.getFriendUpdates(req.body, function(err, result) {
+    if (!err) {
+      // create and response
+      responseJson.friendActivity = result;
+      
+      responseJson.serverTime = Date.now();
+      
+      responseJson.status = 1;
+      
+      res.send(responseJson);
+    }
+    else {
+      // create response
+      responseJson.serverTime = Date.now();
+      
+      responseJson.status = 0;
+      
+      res.send(responseJson);
     }
   });
 });

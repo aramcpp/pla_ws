@@ -16,14 +16,10 @@
             "status": "pending"
         }
     ],
-    "userSettings": {
-        "userid": "as65d4fa6sd54ga6sd54",
-        "myLanguage": "eng",
-        "username": "sadfsad",
-        "birthday": "13/05",
-        "avatar": "icecream",
-        "learningLanguage": "hy",
-        "password": "sdfsa8974",
-        "parentEMail": "asdfasd@sadgsd.com"
-    }
+    "userSettings": [
+        {
+            "settingsID": "myLanguage",
+            "value": "eng"
+        }
+    ]
 }
